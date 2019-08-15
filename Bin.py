@@ -12,8 +12,8 @@ def Bin(q, d, NT):
     # of Bin construction.
     def RandomS(q, d):
         L = q - (2*d) - 1
-        V0 = np.zeros(L)
-        Seq0 = np.zeros(L)
+        V0 = np.zeros(L, dtype = np.int_)
+        Seq0 = np.zeros(L, dtype = np.int_)
         for i in range(0,(L/2)):
             V0[i] = d + i + 1
             V0[(L/2)+i]= q - V0[i]
@@ -28,14 +28,14 @@ def Bin(q, d, NT):
             V0 = V0[V0 != (q - Seq0[i])]
             T0 = T0 - 2
         return Seq0
-   
+
     #################################################################################################
     # Function to check the second condition of Bin article, the elements of matrix D must be all 
     # differents. The First row is the permutation vector and the second third and so on are the 
     # D1(j), D2
     def Dtest(TCode, q):
         L = np.size(TCode)
-        D = np.zeros((np.int_(L/2),L), dtype=np.int_)
+        D = np.zeros((np.int_(L/2),L), dtype = np.int_)
         D[0][:] = TCode
         for i in range(1, (L/2)):
             for j in range(0,L):
@@ -62,7 +62,7 @@ def Bin(q, d, NT):
     # Function to produce the User codes using the Generator vector Gen0. The final matrix 
     def UCodes(Gen0, q):
         L = np.size(Gen0)
-        UCodes = np.zeros((q,L), dtype=np.int_)
+        UCodes = np.zeros((q,L), dtype = np.int_)
         # Get the generator adding the C0, C0+C1, C0+C1+C2, ....., this is the first row for the
         # total user code
         for i in range(0,L):
@@ -74,3 +74,27 @@ def Bin(q, d, NT):
         for i in range(1,q):
             UCodes[i][:] = np.mod(((UCodes[i-1][:])+1),q)
         return UCodes
+
+    ###################################################################################################
+    # Main function to calculate NT chances of random permutation to find differents generator vectors,
+    # To save the "possible" N options, the maximum case is 100 in this case
+    L0 = q - (2*d) - 1
+    BCodes = np.zeros((100,q,L0), dtype = np.int_)
+    # Search the first family of codes
+    for i in range(0,NT):
+        G0 = RandomS(q,d)
+        G1 = Dtest(G0,q)
+        if(G1):
+            BCodes[0][:][:]=UCodes(G0,q)
+            Bcont = 1
+            break
+        # Generator no found
+        if((not G1) and (i == NT)):
+            print "Generator not found"
+    # Add not repetitive generator family
+    for j in range(0,NT):
+        G0 = RandomS(q,d)
+        G1 = Dtest(G0,q)
+        if(G1):
+            for k in range(0,Bcont):
+                A0 = 
