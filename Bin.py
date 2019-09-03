@@ -78,13 +78,46 @@ def Bin(q, d, NT):
     # Function to check the cross correlation Hamming function, it returns the maximum value of cross
     # correlation function
     def HammingCC(C0, C1):
-        CCVector0 = np.()
-        np.roll()
+        # Function to check Hamming function between two vectors
+        def Hamming(A0, A1):
+            Lh = np.size(A0)
+            cont = 0
+            for i in range(0, Lh):
+                if(A0[i] == A1[i]):
+                    cont = cont + 1
+            return cont
+        # Main function to move the second vector 
+        L0 = np.size(C0)
+        CCVector0 = np.zeros(((2*L0)-1), dtype = np.int_)
+        # Right movement of vector C1
+        for i in range(0, L0):
+            C2 = np.roll(C1, i)
+            CCVector0[L0 + i - 1] = Hamming(C0, C2)
+        # Left movement of vector C1
+        for i in range(0, (L0 - 1)):
+            C2 = np.roll(C1, -i)
+            CCVector0[L0 - i - 1] = Hamming(C0, C2)
+        # return the complete vector with delays
+        return CCVector0
 
     #################################################################################################
     # Function to check the matrix of codes achived the Bin conditions of one coincident and minimum 
-    # spectral distance between adjacent symbols
-    def CheckBin(U0,d):
+    # spectral distance between adjacent symbols.
+    # cont1 represent the case for fullfilment the condition of one coincident
+    # contd represent the case for fullfilment the condition of minimum distance
+    def CheckBin(U0, d):
+        x0 = np.shape(U0)
+        qB = np.int_(x0[0])
+        LB = np.int_(x0[1])
+        cont1 = 0
+        for i in range(0, qB):
+            for j in range((i+1), qB):
+                K0 = HammingCC(U0[i][:], U0[j][:])
+                if(np.max(K0) <= 1):
+                    cont1 = cont1 + 1
+
+
+
         
     
     ###################################################################################################
